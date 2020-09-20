@@ -2,15 +2,15 @@ import { v4 as uuid } from "uuid";
 
 const mainColumns = {
   [uuid()]: {
-    name: "Do zrobienia",
+    name: "Planned",
     items: [],
   },
   [uuid()]: {
-    name: "W trakcie",
+    name: "In progress",
     items: [],
   },
   [uuid()]: {
-    name: "Zrobione",
+    name: "Done",
     items: [],
   },
 };

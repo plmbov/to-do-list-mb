@@ -1,2 +1,3 @@
-### Lista zadań
-Aplikacja jest dostępna pod adresem https://to-do-list-mb.firebaseapp.com/
+### Draggable ToDo App
+
+Link to the app: https://to-do-list-mb.firebaseapp.com/

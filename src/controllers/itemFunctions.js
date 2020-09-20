@@ -1,5 +1,9 @@
 import { v4 as uuid } from "uuid";
 
+function sleep(time) {
+  return new Promise((resolve) => setTimeout(resolve, time));
+}
+
 const itemFunctions = {
   addNewItem: function (
     columnId,
@@ -23,7 +27,6 @@ const itemFunctions = {
         emptyItem.push(i);
       }
     }
-
     //If a user wants to add a new item to a column that already has an empty item the logic below will focus the cursor on this empty title.
     if (emptyItem[1] === columnId) {
       const listOfItems = document.getElementsByClassName("itemTitle");
@@ -32,6 +35,7 @@ const itemFunctions = {
           listOfItems[i].focus();
         }
         checkIfWarningNeeded();
+        setNewItemAdded(false);
       }
       //If a user wants to add a new item and an item with empty title already exists in one of other columns the empty item will be removed from the other column and created in the new column.
       //Only exception from above is when the item with empty title has a description added.
@@ -59,10 +63,11 @@ const itemFunctions = {
           setColumns
         );
         setShowWarning(false);
+        setNewItemAdded(true);
       } else {
         setShowWarning(true);
+        setNewItemAdded(false);
       }
-      setNewItemAdded(true);
     } else {
       const newItem = {
         id: uuid(),
@@ -93,10 +98,6 @@ const itemFunctions = {
   ) {
     e.preventDefault();
 
-    function sleep(time) {
-      return new Promise((resolve) => setTimeout(resolve, time));
-    }
-
     const column = columns[columnId];
     const copiedItems = [...column.items];
     let editedItem = copiedItems.find((item) => item.id === itemId);
@@ -112,7 +113,7 @@ const itemFunctions = {
     } else {
       if (!maxCharactersReached) {
         setMaxCharactersReached(true);
-        await sleep(1500);
+        await sleep(2000);
         setMaxCharactersReached(false);
       }
     }

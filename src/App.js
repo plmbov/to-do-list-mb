@@ -13,6 +13,7 @@ function App() {
   const [showWarning, setShowWarning] = useState(false);
   const [maxCharactersReached, setMaxCharactersReached] = useState(false);
   const [newItemAdded, setNewItemAdded] = useState(false);
+  const [itemTitleSelected, setItemTitleSelected] = useState(null);
 
   const listOfItemTitles = document.getElementsByClassName("itemTitle");
 
@@ -39,30 +40,42 @@ function App() {
     }
   };
 
-  //The function is called when a user clicks outside empty line title or "Dodaj" button.
-  const clickOutsideRef = useOnclickOutside(() => checkIfWarningNeeded());
+  //The function is called when a user clicks outside empty line title or "Add new" button.
+  const clickOutsideRef = useOnclickOutside(() => {
+    checkIfWarningNeeded();
+    setNewItemAdded(false);
+  });
 
   //This useEffect is called when a new item is added. It focuses the cursor on the empty title of new item so a user can start typing immediately after adding a new item.
   useEffect(() => {
     if (newItemAdded) {
-      for (let i in listOfItemTitles) {
-        if (listOfItemTitles[i].value === "") {
-          listOfItemTitles[i].focus();
+      for (let i of listOfItemTitles) {
+        if (i.value === "") {
+          i.focus();
         }
       }
-      setNewItemAdded(false);
     }
   }, [newItemAdded, listOfItemTitles]);
 
+  //Limit the time of showing the warning.
+  useEffect(() => {
+    if (showWarning) {
+      setTimeout(() => {
+        setShowWarning(false);
+      }, 2000);
+    }
+  }, [showWarning]);
+
   return (
     <div className="container">
-      <div className="leftStripe"></div>
       <div className="App">
         <header>
-          <h1>Lista zadań</h1>
-          {showWarning && <Warning message="Wpisz tytuł zadania" />}
+          <h1>
+            Draggable ToDo App<span style={{ color: "#f8b102" }}>!</span>
+          </h1>
+          {showWarning && <Warning message="Missing note title" />}
           {maxCharactersReached && !showWarning && (
-            <Warning message="Maksymalnie 25 znaków w tytule" />
+            <Warning message="Title can have max 25 characters" />
           )}
         </header>
         <div className="columnsContainer" key="columnsContainer">
@@ -93,7 +106,7 @@ function App() {
                       }
                       ref={clickOutsideRef}
                     >
-                      <p>Dodaj</p>
+                      <p>Add new&nbsp;</p>
                       <p style={{ fontWeight: 300, fontSize: 20 }}>+</p>
                     </button>
                   </div>
@@ -106,7 +119,7 @@ function App() {
                           ref={provided.innerRef}
                           style={{
                             background: snapshot.isDraggingOver
-                              ? "linear-gradient(180deg, rgba(255,255,255,1) 5%, rgba(247,249,251,1) 100%)"
+                              ? "#eceaea4d"
                               : "transparent",
                           }}
                         >
@@ -136,6 +149,12 @@ function App() {
                                       setMaxCharactersReached={
                                         setMaxCharactersReached
                                       }
+                                      itemTitleSelected={itemTitleSelected}
+                                      setItemTitleSelected={
+                                        setItemTitleSelected
+                                      }
+                                      newItemAdded={newItemAdded}
+                                      setNewItemAdded={setNewItemAdded}
                                     />
                                   );
                                 }}

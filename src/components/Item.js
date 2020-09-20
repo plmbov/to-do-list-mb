@@ -10,10 +10,10 @@ import {
 const Item = (props) => {
   let starIcon = null;
 
-  if (props.columns[props.columnId].name === "W trakcie") {
+  if (props.columns[props.columnId].name === "In progress") {
     starIcon = <FontAwesomeIcon icon={faStarHalf} className="starIcon" />;
   }
-  if (props.columns[props.columnId].name === "Zrobione") {
+  if (props.columns[props.columnId].name === "Done") {
     starIcon = <FontAwesomeIcon icon={faStar} className="starIcon" />;
   }
 
@@ -25,11 +25,10 @@ const Item = (props) => {
       className="singleItem"
       style={{
         background: props.snapshot.isDragging ? "#F7F9FB" : "#fff",
+        boxShadow: props.snapshot.isDragging
+          ? " 0px 0px 10px 0px rgba(204,204,204,1)"
+          : "none",
         ...props.provided.draggableProps.style,
-        boxShadow:
-          props.item.content.title === ""
-            ? " 0px 0px 10px 0px rgba(204,204,204,1)"
-            : "none",
       }}
     >
       <div>
@@ -51,18 +50,20 @@ const Item = (props) => {
                 props.maxCharactersReached,
                 props.setMaxCharactersReached
               );
-              props.setShowWarning(false);
+              props.setItemTitleSelected(props.item.id);
             }}
-            placeholder="Wpisz tytuł..."
+            placeholder="Write the title..."
             onClick={() => {
-              props.setShowWarning(false);
+              props.setItemTitleSelected(props.item.id);
             }}
           />
           <span
             className="exclamationMark"
             style={{
               visibility:
-                (props.showWarning && props.item.content.title === "") ||
+                (!props.newItemAdded &&
+                  props.item.content.title === "" &&
+                  !props.itemTitleSelected !== props.item.id) ||
                 (props.item.content.title === "" &&
                   [...props.listOfItemTitles].filter(
                     (title) => title.value === ""
@@ -91,7 +92,7 @@ const Item = (props) => {
               props.setMaxCharactersReached
             )
           }
-          placeholder="Tutaj wpisz opis..."
+          placeholder="Write a note..."
         />
       </div>
       <button
